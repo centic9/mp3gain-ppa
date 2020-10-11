@@ -1,0 +1,75 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+include /usr/share/dpkg/architecture.mk
+
+ifneq ($(filter $(DEB_HOST_ARCH),amd64 i386 armel armhf powerpc),)
+DEB_CFLAGS_MAINT_APPEND = -fsanitize=address
+DEB_LDFLAGS_MAINT_APPEND = -fsanitize=address
+endif
+
+DEB_BUILD_MAINT_OPTIONS = hardening=+all
+DPKG_EXPORT_BUILDFLAGS=1
+
+include /usr/share/dpkg/buildflags.mk
+
+make_vars = \
+	INSTALL_PATH='$$(DESTDIR)/usr/bin'
+
+build: build-stamp
+build-arch: build-stamp
+build-indep: build
+
+build-stamp:
+	dh_testdir
+
+	$(MAKE)
+	docbook-to-man  debian/mp3gain.sgml > debian/mp3gain.1
+
+	touch build-stamp
+
+clean:
+	dh_testdir
+	dh_testroot
+	rm -f build-stamp
+
+	$(MAKE) clean
+	rm -f debian/mp3gain.1
+
+	dh_clean 
+
+install: build
+	dh_testdir
+	dh_testroot
+	dh_prep
+	dh_installdirs
+
+	$(MAKE) install $(make_vars) DESTDIR=$(CURDIR)/debian/mp3gain
+
+
+# Build architecture-independent files here.
+binary-indep: build install
+# We have nothing to do by default.
+
+# Build architecture-dependent files here.
+binary-arch: build install
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs 
+	dh_installdocs debian/README.method
+	dh_installman debian/mp3gain.1
+	dh_link
+	dh_strip
+	dh_compress
+	dh_fixperms
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install
