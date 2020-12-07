@@ -1,3 +1,9 @@
+mp3gain (1.6.2-1ubuntu0~ppa1) focal; urgency=medium
+
+  * Backport to Focal
+
+ -- Dominik Stadler (Ubuntu key) <dominik.stadler@gmx.at>  Mon, 07 Dec 2020 08:19:03 +0100
+
 mp3gain (1.6.2-1) unstable; urgency=high
 
   [ Scott Hardin ]
