@@ -6,10 +6,11 @@
 
 include /usr/share/dpkg/architecture.mk
 
-ifneq ($(filter $(DEB_HOST_ARCH),amd64 i386 armel armhf powerpc),)
-DEB_CFLAGS_MAINT_APPEND = -fsanitize=address
-DEB_LDFLAGS_MAINT_APPEND = -fsanitize=address
-endif
+# Disabled address-sanitizing as it crashes in newer Ubuntu versions and I could not find an easy fix
+#ifneq ($(filter $(DEB_HOST_ARCH),amd64 i386 armel armhf powerpc),)
+#DEB_CFLAGS_MAINT_APPEND = -fsanitize=address
+#DEB_LDFLAGS_MAINT_APPEND = -fsanitize=address
+#endif
 
 DEB_BUILD_MAINT_OPTIONS = hardening=+all
 DPKG_EXPORT_BUILDFLAGS=1
